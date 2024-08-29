@@ -37,6 +37,7 @@ class TodoProvider with ChangeNotifier {
                   'title': task.title,
                   'description': task.description,
                   'isCompleted': task.isCompleted,
+                  'createdAt': task.createdAt,
                 })
             .toList()));
   }
@@ -52,6 +53,7 @@ class TodoProvider with ChangeNotifier {
                 title: todoJson['title'],
                 description: todoJson['description'],
                 isCompleted: todoJson['isCompleted'],
+                createdAt: todoJson['createdAt'],
               ))
           .toList();
       notifyListeners();
