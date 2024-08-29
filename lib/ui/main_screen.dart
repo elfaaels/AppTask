@@ -88,7 +88,7 @@ class _MainScreenState extends State<MainScreen>
                           const SizedBox(height: 30),
                           Text(
                             DateTime.now().toUtc().toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12,
                               color: Colors.grey,
                             ),
@@ -139,63 +139,115 @@ class _MainScreenState extends State<MainScreen>
                     itemBuilder: (context, index) {
                       final todo = todos[index];
                       return SlideInLeft(
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(10),
-                          title: Text(
-                            todo.title ?? 'N/A',
-                            style: TextStyle(
-                              color:
-                                  todo.isCompleted ? Colors.red : Colors.black,
-                              decoration: todo.isCompleted
-                                  ? TextDecoration.lineThrough
-                                  : TextDecoration.none,
+                        child: Dismissible(
+                          background: Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: Container(
+                              height: 85,
+                              width: double.infinity,
+                              // margin: EdgeInsets.symmetric(vertical: 8),
+                              // padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                border: Border.all(width: 1, color: Colors.red),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: const Align(
+                                alignment: Alignment.centerRight,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Icon(Icons.delete, color: Colors.white),
+                                    Text(
+                                      " Delete",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                    SizedBox(width: 20),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 10),
-                              Text(
-                                todo.description ?? 'N/A',
-                                style: TextStyle(
-                                  color: todo.isCompleted
-                                      ? Colors.red
-                                      : Colors.black,
-                                  decoration: todo.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                todo.createdAt ?? 'N/A',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: todo.isCompleted
-                                      ? Colors.red
-                                      : Colors.grey,
-                                  decoration: todo.isCompleted
-                                      ? TextDecoration.lineThrough
-                                      : TextDecoration.none,
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () {
-                              todoProvider.deleteTask(todo.id ?? '0');
-                            },
-                          ),
-                          leading: Checkbox(
-                            value: todo.isCompleted,
-                            onChanged: (_) {
-                              todoProvider.toggleTodoStatus(todo.id ?? '0');
-                            },
-                          ),
-                          onLongPress: () {
+                          direction: DismissDirection.endToStart,
+                          key: UniqueKey(),
+                          onDismissed: (direction) {
                             todoProvider.deleteTask(todo.id ?? '0');
+                            setState(() {
+                              // todos.removeAt(index);
+                            });
                           },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, top: 20, right: 10),
+                            child: Container(
+                              height: 85,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                border:
+                                    Border.all(width: 1, color: Colors.indigo),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: ListTile(
+                                // contentPadding: const EdgeInsets.all(6),
+                                title: Text(
+                                  todo.title ?? 'N/A',
+                                  style: TextStyle(
+                                    color: todo.isCompleted
+                                        ? Colors.red
+                                        : Colors.black,
+                                    decoration: todo.isCompleted
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none,
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      todo.description ?? 'N/A',
+                                      style: TextStyle(
+                                        color: todo.isCompleted
+                                            ? Colors.red
+                                            : Colors.black,
+                                        decoration: todo.isCompleted
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      todo.createdAt ?? 'N/A',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: todo.isCompleted
+                                            ? Colors.red
+                                            : Colors.grey,
+                                        decoration: todo.isCompleted
+                                            ? TextDecoration.lineThrough
+                                            : TextDecoration.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                leading: Checkbox(
+                                  value: todo.isCompleted,
+                                  onChanged: (_) {
+                                    todoProvider
+                                        .toggleTodoStatus(todo.id ?? '0');
+                                  },
+                                ),
+                                onLongPress: () {
+                                  todoProvider.deleteTask(todo.id ?? '0');
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       );
                     },
